@@ -14,6 +14,8 @@ def get_filepaths_from_folder(dpath, mask):
     :type dpath: str
     :param mask: Only files that end with this mask will be added.
     :type mask: str
+    :return: List of full filepaths.
+    :rtype: list[str]
     """
     
     fpaths = []
