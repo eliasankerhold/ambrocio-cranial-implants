@@ -10,6 +10,7 @@ class FileImporter:
     :ivar export_dir: Base directory of the desired export database. Will be created if not exists.
     :type export_dir: str
     """
+
     def __init__(self, import_dir: str, export_dir: str):
         self.import_dir = import_dir
         self.export_dir = export_dir
@@ -42,6 +43,10 @@ class FileImporter:
         self.export_fpaths = export_paths
 
     def prepare_export_directories(self):
+        """
+        Creates all necessary subdirectories of the export directory.
+        """
+
         i = 0
         for path in self.export_fpaths.values():
             dir = os.path.dirname(path)
