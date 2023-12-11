@@ -1,6 +1,7 @@
 import open3d as o3d
 import pymeshlab as plm
 import numpy as np
+import pandas as pd
 
 from file_importer import FileImporter
 
@@ -93,7 +94,7 @@ class GeometryProcessor:
 
     @staticmethod
     def prepare_ray_casting(ref_skull_path):
-        ref_skull = o3d.io.read_triangle_mesh(ref_skull_path)
+        ref_skull = o3d.io.read_triangle_mesh(filename=ref_skull_path, enable_post_processing=True)
         ref_skull = ref_skull.compute_triangle_normals()
         vertices = np.asarray(ref_skull.vertices)
         normals = np.asarray(ref_skull.triangle_normals)
@@ -111,7 +112,6 @@ class GeometryProcessor:
         scene = o3d.t.geometry.RaycastingScene()
         scene.add_triangles(o3d.t.geometry.TriangleMesh.from_legacy(mesh_legacy=intersect_mesh))
         print(f'Added intersection mesh to scene')
-
         normal_cast = scene.cast_rays(normal_rays, nthreads=0)
         print(f'Casted normal rays')
         anti_normal_cast = scene.cast_rays(anti_normal_rays, nthreads=0)
@@ -123,6 +123,27 @@ class GeometryProcessor:
         print(f'Computed distance mask and hit counts')
 
         return np.logical_or(n_mask, an_mask).astype(int)
+
+    @staticmethod
+    def export_ray_casting_result(ref_skull_path, hits, export_path: str):
+        ms = plm.MeshSet()
+        ms.load_new_mesh(file_name=ref_skull_path)
+        ref_skull = ms.current_mesh()
+        pad_length = ref_skull.face_number() - ref_skull.vertex_number()
+        vertices = ref_skull.vertex_matrix()
+        triangles = ref_skull.face_matrix()
+        padded_vertices = np.pad(vertices, pad_width=((0, pad_length), (0, 0)), constant_values=np.nan)
+
+        export_df = pd.DataFrame({'x': padded_vertices[:, 0],
+                                  'y': padded_vertices[:, 1],
+                                  'z': padded_vertices[:, 2],
+                                  'hits': hits,
+                                  'i': triangles[:, 0],
+                                  'j': triangles[:, 1],
+                                  'k': triangles[:, 2]})
+
+        export_df.to_csv(path_or_buf=export_path, index=False)
+        print(f'Exported results to {export_path}')
 
     @staticmethod
     def get_convex_hull(mesh_set: plm.MeshSet):

@@ -15,19 +15,21 @@ importer.scan_import_export_structure()
 # importer.prepare_export_directories()
 
 gm = GeometryProcessor(file_importer=importer)
-# gm.prepare_ref_skull(load_path=ref_skull_path, save_path=processed_ref_skull_path, cellsize=4, offset=50)
+# gm.prepare_ref_skull(load_path=ref_skull_path, save_path=processed_ref_skull_path, cellsize=1, offset=50)
 
 n_rays, an_rays = gm.prepare_ray_casting(ref_skull_path=processed_ref_skull_path)
-count = np.zeros(n_rays.shape[0])
+hits = np.zeros(n_rays.shape[0])
 
 start = datetime.now()
+print(f'{start}: Started raycasting with {hits.shape[0] * 2} rays.')
 
 for import_path, export_path in zip(importer.import_fpaths.values(), importer.export_fpaths.values()):
     print(f"\nProcessing {import_path}...")
     mesh = gm.load_file(fpath=import_path, library='open3d')
-    count += gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays, anti_normal_rays=an_rays, margin=10)
+    hits += gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays, anti_normal_rays=an_rays, margin=10)
 
 print(datetime.now() - start)
 print('Done!')
 
-np.savetxt(fname=os.path.join('..', 'exports', 'hits.csv'), X=count)
+gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, hits=hits,
+                             export_path=os.path.join('..', 'exports', 'hits.csv'))
