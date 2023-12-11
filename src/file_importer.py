@@ -30,12 +30,20 @@ class FileImporter:
         fpaths = {}
         export_paths = {}
         for dirpath, _, fname in os.walk(self.import_dir):
-            cleared_stls = [i for i in fname if mask is not None and i.endswith(mask)]
+            if mask is not None:
+                cleared_stls = [i for i in fname if i.endswith(mask)]
+            else:
+                cleared_stls = [i for i in fname]
             if cleared_stls:
-                dirpath_from_main_dir = dirpath.split(f'{self.import_dir}{os.path.sep}')[1]
-                fpaths[cleared_stls[0]] = os.path.join(dirpath, cleared_stls[0])
-                export_paths[cleared_stls[0]] = os.path.join(self.export_dir, dirpath_from_main_dir,
-                                                             f"{file_prefix}_{cleared_stls[0]}")
+                dirpath_from_main_dir = dirpath.split(f'{self.import_dir}{os.path.sep}')
+                if len(dirpath_from_main_dir) > 1:
+                    dirpath_from_main_dir = dirpath_from_main_dir[1]
+                else:
+                    dirpath_from_main_dir = dirpath_from_main_dir[0]
+
+                for _, fpath in enumerate(cleared_stls):
+                    fpaths[fpath] = os.path.join(dirpath, fpath)
+                    export_paths[fpath] = os.path.join(self.export_dir, dirpath_from_main_dir, f"{file_prefix}_{fpath}")
 
         print("Found " + str(len(fpaths)) + " files.")
 
@@ -55,6 +63,3 @@ class FileImporter:
                 i += 1
 
         print(f"Created {i:3.0f} directories.")
-
-
-
