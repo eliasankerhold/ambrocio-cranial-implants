@@ -1,5 +1,6 @@
 import open3d as o3d
 import pymeshlab as plm
+import numpy as np
 
 from file_importer import FileImporter
 
@@ -67,6 +68,61 @@ class GeometryProcessor:
 
         elif fpath is not None:
             return func(fpath)
+
+    @staticmethod
+    def prepare_ref_skull(load_path: str, save_path: str, cellsize: int, offset: int):
+        del_ids = []
+        ms = plm.MeshSet()
+        ms.load_new_mesh(load_path)
+        print(f'Loaded reference skull {load_path}')
+        del_ids.append(ms.current_mesh_id())
+        ms.generate_convex_hull()
+        print('Computed convex hull')
+        del_ids.append(ms.current_mesh_id())
+        cellsize = plm.Percentage(cellsize)
+        offset = plm.Percentage(offset)
+        ms.generate_resampled_uniform_mesh(cellsize=cellsize, offset=offset, multisample=True)
+        print(f'Resampled mesh with cellsize={cellsize.value()} % and offset={offset.value()} %')
+        for id in del_ids:
+            ms.set_current_mesh(id)
+            ms.delete_current_mesh()
+
+        print('Deleted leftover meshes')
+        ms.save_current_mesh(file_name=save_path)
+        print(f'Saved processed reference skull to {save_path}')
+
+    @staticmethod
+    def prepare_ray_casting(ref_skull_path):
+        ref_skull = o3d.io.read_triangle_mesh(ref_skull_path)
+        ref_skull = ref_skull.compute_triangle_normals()
+        vertices = np.asarray(ref_skull.vertices)
+        normals = np.asarray(ref_skull.triangle_normals)
+        triangles = np.asarray(ref_skull.triangles)
+        triangles_coords = vertices[triangles]
+        ray_origins = np.mean(triangles_coords, axis=1)
+        normal_rays = o3d.core.Tensor(np.concatenate((ray_origins, normals), axis=1), dtype=o3d.core.Dtype.Float32)
+        anti_normal_rays = o3d.core.Tensor(np.concatenate((ray_origins, -1 * normals), axis=1),
+                                           dtype=o3d.core.Dtype.Float32)
+
+        return normal_rays, anti_normal_rays
+
+    @staticmethod
+    def do_ray_casting(intersect_mesh, normal_rays, anti_normal_rays, margin: float):
+        scene = o3d.t.geometry.RaycastingScene()
+        scene.add_triangles(o3d.t.geometry.TriangleMesh.from_legacy(mesh_legacy=intersect_mesh))
+        print(f'Added intersection mesh to scene')
+
+        normal_cast = scene.cast_rays(normal_rays, nthreads=0)
+        print(f'Casted normal rays')
+        anti_normal_cast = scene.cast_rays(anti_normal_rays, nthreads=0)
+        print(f'Casted anti-normal rays')
+
+        n_dist, an_dist = normal_cast['t_hit'].numpy(), anti_normal_cast['t_hit'].numpy()
+        n_mask = np.ma.masked_where(n_dist <= margin, n_dist).mask
+        an_mask = np.ma.masked_where(an_dist <= margin, an_dist).mask
+        print(f'Computed distance mask and hit counts')
+
+        return np.logical_or(n_mask, an_mask).astype(int)
 
     @staticmethod
     def get_convex_hull(mesh_set: plm.MeshSet):
