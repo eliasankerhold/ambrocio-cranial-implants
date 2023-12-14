@@ -1,2 +1,4 @@
 open3d==0.17.0
 pymeshlab==2022.2.post4
+numpy~=1.26.1
+pandas~=2.1.4
