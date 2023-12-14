@@ -5,17 +5,17 @@ import numpy as np
 import os
 from datetime import datetime
 
-ref_skull_path = os.path.join('..', 'standard_skull', 'Standard_Skull_A0035_topOnly.stl')
-processed_ref_skull_path = os.path.join('..', 'exports', 'reference_skull_prepared.stl')
+ref_skull_path = os.path.join('.', 'standard_skull', 'Standard_Skull_A0035_topOnly_flattened_smoothed.stl')
+processed_ref_skull_path = os.path.join('.', 'exports', 'reference_skull_prepared.stl')
 
-importer = FileImporter(import_dir=os.path.join('..', 'ProcessedSkulls'),
+importer = FileImporter(import_dir=os.path.join('.', 'ProcessedSkulls'),
                         export_dir=f'..{os.path.sep}exports')
 
 importer.scan_import_export_structure()
 # importer.prepare_export_directories()
 
 gm = GeometryProcessor(file_importer=importer)
-# gm.prepare_ref_skull(load_path=ref_skull_path, save_path=processed_ref_skull_path, cellsize=1, offset=50)
+gm.prepare_ref_skull(load_path=ref_skull_path, save_path=processed_ref_skull_path, cellsize=1, offset=50)
 
 n_rays, an_rays = gm.prepare_ray_casting(ref_skull_path=processed_ref_skull_path)
 hits = np.zeros(n_rays.shape[0])
@@ -32,4 +32,4 @@ print(datetime.now() - start)
 print('Done!')
 
 gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, hits=hits,
-                             export_path=os.path.join('..', 'exports', 'hits.csv'))
+                             export_path=os.path.join('.', 'exports', 'hits.csv'))
