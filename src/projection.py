@@ -26,7 +26,7 @@ print(f'{start}: Started raycasting with {hits.shape[0] * 2} rays.')
 for import_path, export_path in zip(importer.import_fpaths.values(), importer.export_fpaths.values()):
     print(f"\nProcessing {import_path}...")
     mesh = gm.load_file(fpath=import_path, library='open3d')
-    hits += gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays, anti_normal_rays=an_rays, margin=10)
+    hits += gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays, anti_normal_rays=an_rays, margin=300)
 
 print(datetime.now() - start)
 print('Done!')

@@ -118,8 +118,8 @@ class GeometryProcessor:
         print(f'Casted anti-normal rays')
 
         n_dist, an_dist = normal_cast['t_hit'].numpy(), anti_normal_cast['t_hit'].numpy()
-        n_mask = np.ma.masked_where(n_dist <= margin, n_dist).mask
-        an_mask = np.ma.masked_where(an_dist <= margin, an_dist).mask
+        n_mask = np.ma.masked_where(np.abs(n_dist) <= margin, n_dist).mask
+        an_mask = np.ma.masked_where(np.abs(an_dist) <= margin, an_dist).mask
         print(f'Computed distance mask and hit counts')
 
         return np.logical_or(n_mask, an_mask).astype(int)
