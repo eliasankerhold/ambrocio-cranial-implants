@@ -1,8 +1,8 @@
 import os
 from cranalyzer.visualizer import CranialPlot
 
-data_path = os.path.join('..', 'exports', 'hits.csv')
-export_path = os.path.join('..', 'exports', 'heatmap.html')
+data_path = os.path.join('exports', 'hits_db_01.csv')
+export_path = os.path.join('exports', 'heatmap_db_01.html')
 
 plotter = CranialPlot(results_path=data_path)
 

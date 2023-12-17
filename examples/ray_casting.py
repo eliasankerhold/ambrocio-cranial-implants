@@ -5,11 +5,12 @@ import numpy as np
 import os
 from datetime import datetime
 
-ref_skull_path = os.path.join('standard_skull', 'Standard_Skull_A0035_topOnly_flattened_smoothed.stl')
 processed_ref_skull_path = os.path.join('exports', 'reference_skull_prepared_smoothing.stl')
 
-importer = FileImporter(import_dir='ProcessedSkulls',
+importer = FileImporter(import_dir='processed_skulls',
                         export_dir=f'exports')
+
+importer.scan_import_export_structure()
 
 gm = GeometryProcessor(file_importer=importer)
 
@@ -27,4 +28,4 @@ for import_path, export_path in zip(importer.import_fpaths.values(), importer.ex
 print(f'Done! Analysis took {datetime.now() - start}')
 
 gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, hits=hits,
-                             export_path=os.path.join('exports', 'hits.csv'))
+                             export_path=os.path.join('exports', 'hits_db_01.csv'))
