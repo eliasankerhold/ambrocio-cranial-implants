@@ -1,30 +1,106 @@
-# Ambrocio Project
-Hey, welcome to Ambrocio.
+<a name="readme-top"></a>
 
-Link for the standard and realigned skull files: https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing
 
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+
+<h3 align="center">Cranalyzer</h3>
+
+  <p align="center">
+    This repository is being used in the development of novel modular cranial implants. It provides tools for the analysis and visualization of datasets containing 3D models of human skulls with cranial defects. 
+  </p>
+</div>
+
+
+
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#usage">Usage</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+This projects aids a quantitative analysis of cranial defects in humans by providing tools for analyzing data sets of 3D-models of damaged skulls in stl file format. The analysis is based on a ray casting procedure, where linear rays originating from a pre-defined reference skull are intersected with damaged skull models. A visualization tool allow the creation of an interactive 3D-heatmap which displays the whole data set on the surface of the reference skull.
+
+The majority of such databases do not originate from targeted efforts to investigate the statistic of cranial defects, but are a byproduct of patient-specific implant design. Since this design process only requires models of the upper parts of the skull, facial features are commonly not present. This removes almost all symmetries and dramatically complicates the alignment necessary for analysis. In the current state of the project, it is therefore necessary to manually align the damaged skull models to the reference skull. If the availability of such databases improves, a machine-learning based approach to this alignment procedure could be explored.
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+This project is fully pip installable, but not (yet) hosted on pypi. 
+
+### Prerequisites
+
+To get started, several resources are available here: https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing
 https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing
 
-### The Projection Algorithm
+These archives contain 29 pre-aligned models of human skulls with cranial defects taken from the publicly available MUG500+ database. Additionally, they contain a healthy reference skull, originating from the aforementioned database, that proved suitable for the analysis.
 
-This procedure is supposed to map models of damaged skulls onto a standard healthy skull surface in order to quantitatively analyze the distribution of size, location, curvature, and other parameters in the data set. It is necessary to align all skulls manually before the prjection can be computed.
+*A more detailed description where to save these files to run the example code out of the box will follow here.*
 
-The algorithm consists of two main steps:
+### Installation
+1. Clone the repo
+   ```sh
+   git clone https://github.com/eliasankerhold/ambrocio-cranial-implants.git
+   ```
+2. Navigate to the root directory
+   ```sh
+   cd ambrocio-cranial-implants
+   ```
+3. Install using pip
+   ```sh
+   python -m pip install .
+   ```
 
-#### Preparation of the reference skull
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-This initial step is only executed once and serves as a basis for the analysis.
 
-1. The standard reference skull is converted into a convex hull. 
-2. Its surface is resampled using triangles of fixed size and uniform distribution.
-3. The geometric center of each triangle is computed, as well as its normal and anti-normal vectors.
 
-#### Raycasting
+<!-- USAGE EXAMPLES -->
+## Usage
 
-These steps are repeated for each damaged skull model in the database. A global array counts the number of hits throughout the whole data set. Each entry of this array corresponds to one triangle of the reference skull, i.e. two rays (normal and anti-normal).
+An example workflow and working analysis of the referenced database can be found in the `examples` directory.
 
-1. Originating from the geometric center of each triangle, an outward and inward facing ray is sent along the normal vector of the triangle.
-2. The intersection between these rays and the damaged skulls are computed. 
-3. If at least one ray intersects the damaged skull at least once and the distance of the triangle center to the intersection point is less than a user-defined margin, the corresponding hit count is incremented by one. This counting is strictly binary, meaning that it does not matter whether the normal or anti-normal ray intersects the damaged skull, nor is it relevant how often an intersection occurs. If any intersection within the given margin is computed, the count is always increased by 1.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-Finally, the resulting array of hits per triangle is exported and saved as a csv file.
+<!-- LICENSE -->
+## License
+
+Distributed under the GPLv3.0 License. See `LICENSE.txt` for more information.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+<!-- CONTACT -->
+## Contact
+
+Elias Ankerhold - elias.ankerhold[at]aalto.fi </br>
+Jonas Tjepkema - jonas.tjepkema[at]aalto.fi
+
+Project Link: [https://github.com/eliasankerhold/ambrocio-cranial-implants](https://github.com/eliasankerhold/ambrocio-cranial-implants)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
