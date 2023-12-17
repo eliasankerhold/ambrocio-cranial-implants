@@ -50,5 +50,5 @@ class CranialPlot:
         if save:
             assert filename is not None, "Filename is required for saving the figure."
             assert filename.endswith(".html"), "Filename must end with .html extension."
-            self.fig.write_image(filename)
+            self.fig.write_html(filename)
         self.fig.show()
