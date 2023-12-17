@@ -39,9 +39,9 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This projects aids a quantitative analysis of cranial defects in humans by providing tools for analyzing data sets of 3D-models of damaged skulls in stl file format. The analysis is based on a ray casting procedure, where linear rays originating from a pre-defined reference skull are intersected with damaged skull models. A visualization tool allow the creation of an interactive 3D-heatmap which displays the whole data set on the surface of the reference skull.
+This projects aids the quantitative analysis of cranial defects in humans by providing tools for analyzing datasets of 3D-models of damaged skulls in STL file format. The analysis is based on a ray casting procedure, where linear rays originating from a pre-defined reference skull are intersected with damaged skull models. A visualization tool allows the creation of an interactive 3D-heatmap, which displays the whole database on the surface of the reference skull.
 
-The majority of such databases do not originate from targeted efforts to investigate the statistic of cranial defects, but are a byproduct of patient-specific implant design. Since this design process only requires models of the upper parts of the skull, facial features are commonly not present. This removes almost all symmetries and dramatically complicates the alignment necessary for analysis. In the current state of the project, it is therefore necessary to manually align the damaged skull models to the reference skull. If the availability of such databases improves, a machine-learning based approach to this alignment procedure could be explored.
+The majority of such databases do not originate from targeted efforts to investigate the statistic of cranial defects, but are a byproduct of patient-specific implant design. Since this design process only requires models of the upper parts of the skull, facial features are commonly not present. This removes almost all symmetries and dramatically complicates the alignment necessary for an analysis. In the current state of the project, it is therefore necessary to manually align the damaged skull models to the reference skull. If the availability of such databases improves, a machine-learning based approach to this alignment procedure could be explored.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -57,7 +57,7 @@ This project is fully pip installable, but not (yet) hosted on pypi.
 To get started, several resources are available here: https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing
 https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing
 
-These archives contain 29 pre-aligned models of human skulls with cranial defects taken from the publicly available MUG500+ database. Additionally, they contain a healthy reference skull, originating from the aforementioned database, that proved suitable for the analysis.
+These archives contain 29 pre-aligned models of human skulls with cranial defects taken from the publicly available [MUG500+ database](https://github.com/Jianningli/mug500plus). Additionally, they contain a healthy reference skull, originating from the aforementioned database, that proved suitable for the analysis.
 
 *A more detailed description where to save these files to run the example code out of the box will follow here.*
 
