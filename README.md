@@ -3,6 +3,8 @@ Hey, welcome to Ambrocio.
 
 Link for the standard and realigned skull files: https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing
 
+https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing
+
 ### The Projection Algorithm
 
 This procedure is supposed to map models of damaged skulls onto a standard healthy skull surface in order to quantitatively analyze the distribution of size, location, curvature, and other parameters in the data set. It is necessary to align all skulls manually before the prjection can be computed.
