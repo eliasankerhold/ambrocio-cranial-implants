@@ -5,8 +5,8 @@ import numpy as np
 import os
 from datetime import datetime
 
-ref_skull_path = os.path.join('..', 'standard_skull', 'Standard_Skull_A0035_topOnly.stl')
-processed_ref_skull_path = os.path.join('..', 'exports', 'reference_skull_prepared.stl')
+ref_skull_path = os.path.join('..', 'standard_skull', 'Standard_Skull_A0035_topOnly_flattened_smoothed.stl')
+processed_ref_skull_path = os.path.join('..', 'exports', 'reference_skull_prepared_smoothing.stl')
 
 importer = FileImporter(import_dir=os.path.join('..', 'ProcessedSkulls'),
                         export_dir=f'..{os.path.sep}exports')

@@ -77,16 +77,16 @@ class GeometryProcessor:
         ms.load_new_mesh(load_path)
         print(f'Loaded reference skull {load_path}')
         del_ids.append(ms.current_mesh_id())
-        ms.generate_convex_hull()
-        print('Computed convex hull')
-        del_ids.append(ms.current_mesh_id())
+        # ms.generate_convex_hull()
+        # print('Computed convex hull')
+        # del_ids.append(ms.current_mesh_id())
         cellsize = plm.Percentage(cellsize)
         offset = plm.Percentage(offset)
         ms.generate_resampled_uniform_mesh(cellsize=cellsize, offset=offset, multisample=True)
         print(f'Resampled mesh with cellsize={cellsize.value()} % and offset={offset.value()} %')
-        for id in del_ids:
-            ms.set_current_mesh(id)
-            ms.delete_current_mesh()
+        # for id in del_ids:
+        #     ms.set_current_mesh(id)
+        #     ms.delete_current_mesh()
 
         print('Deleted leftover meshes')
         ms.save_current_mesh(file_name=save_path)
