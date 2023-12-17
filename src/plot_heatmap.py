@@ -2,7 +2,7 @@ import plotly as pl
 import os
 import pandas as pd
 
-path = os.path.join('.','exports','hits.csv')
+path = os.path.join('..', 'exports', 'hits.csv')
 
 
 print(path)
@@ -20,5 +20,5 @@ mesh = pl.graph_objs.Mesh3d(x=df.x,
                             intensitymode="cell")
 
 fig = pl.graph_objs.Figure(data=[mesh])
-fig.write_html("smooth_standard.html")
+fig.write_html("heatmap_database_28.html")
 fig.show()
