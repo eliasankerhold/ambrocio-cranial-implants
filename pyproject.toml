@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cranalyzer"
-version = "0.1.1"
+version = "0.1.2"
 description = "Semi-automated analysis of cranial defect 3D-model database."
 readme = "README.md"
 authors = [{ name = "Elias Ankerhold", email = "elias.ankerhold@aalto.fi" },
@@ -23,6 +23,7 @@ dependencies = [
     "open3d==0.17.0",
     "pandas>=1.2.0",
     "plotly>=5.17.0",
+    "plotly-express>=0.4.1",
     "pymeshlab==2022.2.post4"
 ]
 requires-python = ">=3.9,<3.10"

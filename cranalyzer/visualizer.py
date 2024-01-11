@@ -1,4 +1,5 @@
-import plotly as plt
+import plotly as po
+import plotly_express as px
 import pandas as pd
 
 
@@ -7,11 +8,17 @@ class CranialPlot:
     Provides simple tools to visualize the results of ray casting analysis. All class variables can be easily retrieved
     and manipulated or integrated into other plots.
     """
-    def __init__(self, results_path: str):
-        self.results_path = results_path
-        self.results = pd.read_csv(results_path)
+    def __init__(self, hits_path: str, areas_path: str):
+        self.hits_path = hits_path
+        self.hits_results = pd.read_csv(hits_path)
+        self.areas_path = areas_path
+        self.areas_results = pd.read_csv(areas_path)
         self.mesh_plot = None
         self.fig = None
+
+    def plot_area_histogram(self, bins: int = 20):
+        fig = px.histogram(self.areas_results, x='abs_defect_area', nbins=bins)
+        fig.show()
 
     def get_mesh_plot(self):
         """
@@ -20,10 +27,10 @@ class CranialPlot:
         :return: Mesh plot of the given results file with standard color map.
         :rtype: plotly.graph_objects.Mesh3d
         """
-        result = self.results
-        self.mesh_plot = plt.graph_objs.Mesh3d(x=result.x, y=result.y, z=result.z,
-                                               i=result.i, j=result.j, k=result.k,
-                                               intensitymode='cell', intensity=result.hits)
+        result = self.hits_results
+        self.mesh_plot = po.graph_objs.Mesh3d(x=result.x, y=result.y, z=result.z,
+                                              i=result.i, j=result.j, k=result.k,
+                                              intensitymode='cell', intensity=result.hits)
 
         return self.mesh_plot
 
@@ -35,7 +42,9 @@ class CranialPlot:
         :rtype: plotly.graph_objects.Figure
         """
         assert self.mesh_plot is not None, "Generate mesh plot first."
-        self.fig = plt.graph_objs.Figure(data=[self.mesh_plot])
+        self.fig = po.graph_objs.Figure(data=[self.mesh_plot])
+        camera = dict(eye=dict(x=-1.5, y=-2.5, z=1.25))
+        self.fig.update_layout(scene_camera=camera)
         return self.fig
 
     def show_plot(self, save: bool = False, filename: str = None):
