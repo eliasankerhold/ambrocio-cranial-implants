@@ -155,10 +155,12 @@ class GeometryProcessor:
 
     @staticmethod
     def do_ray_casting(intersect_mesh: o3d.geometry.TriangleMesh, normal_rays: o3d.core.Tensor,
-                       anti_normal_rays: o3d.core.Tensor, margin: float, triangle_areas: np.ndarray):
+                       anti_normal_rays: o3d.core.Tensor, margin: float, triangle_areas: np.ndarray, out: bool = True):
         """
         Computes the actual ray casting procedure of the intersect_mesh with the rays defined in the ray tensors.
 
+        :param out: Toggles whether to print detailed progress.
+        :type out: bool
         :param triangle_areas: The area sizes of all triangles in the reference mesh.
         :type triangle_areas: numpy.ndarray
         :param intersect_mesh: Model to be analyzed. The rays will be cast and intersected with this model.
@@ -177,20 +179,23 @@ class GeometryProcessor:
 
         scene = o3d.t.geometry.RaycastingScene()
         scene.add_triangles(o3d.t.geometry.TriangleMesh.from_legacy(mesh_legacy=intersect_mesh))
-        print(f'Added intersection mesh to scene')
         normal_cast = scene.cast_rays(normal_rays, nthreads=0)
-        print(f'Casted normal rays')
         anti_normal_cast = scene.cast_rays(anti_normal_rays, nthreads=0)
-        print(f'Casted anti-normal rays')
+        if out:
+            print(f'Added intersection mesh to scene')
+            print(f'Casted normal rays')
+            print(f'Casted anti-normal rays')
 
         n_dist, an_dist = normal_cast['t_hit'].numpy(), anti_normal_cast['t_hit'].numpy()
         n_mask = np.ma.masked_where(np.abs(n_dist) <= margin, n_dist).mask
         an_mask = np.ma.masked_where(np.abs(an_dist) <= margin, an_dist).mask
-        print(f'Computed distance mask and hit counts')
+
 
         hits = np.logical_or(n_mask, an_mask)
         defect_area = np.sum(np.multiply(np.invert(hits), triangle_areas))
-        print(f'Computed defect area: {defect_area}')
+        if out:
+            print(f'Computed distance mask and hit counts')
+            print(f'Computed defect area: {defect_area}')
 
         return hits.astype(int), defect_area, np.sum(hits)
 
