@@ -1,3 +1,5 @@
+import os.path
+
 import open3d as o3d
 import pymeshlab as plm
 import numpy as np
@@ -110,15 +112,30 @@ class GeometryProcessor:
         print(f'Saved processed reference skull to {save_path}')
 
     @staticmethod
-    def prepare_ray_casting(ref_skull_path: str):
+    def compute_triangle_area(coords: np.ndarray) -> float:
+        """
+        Computes the euclidian surface area of all triangles in the input array.
+
+        :param coords: Array of coordinates of the form
+            [[[x_a1, y_a1, z_a1], [x_a2, y_a2, z_a2], [x_a3, y_a3, z_a3]],
+             [[x_b1, y_b1, z_b1], [x_b2, y_b2, z_b2], [x_b3, y_b3, z_b3]]]
+        :type coords: np.ndarray
+        :return: Array of surface areas.
+        :rtype: np.ndarray
+        """
+        vec = np.cross(coords[:, :, 1] - coords[:, :, 0], coords[:, :, 0] - coords[:, :, 2])
+        return 0.5 * np.sqrt(np.sum(np.square(vec), axis=1))
+
+    def prepare_ray_casting(self, ref_skull_path: str):
         """
         Prepare the ray casting procedure by loading the reference skull model and computing the ray tensors.
 
         :param ref_skull_path: Path to the reference skull, preferably prepared by prepare_reference_skull
         :type ref_skull_path: str
-        :return: Two 6D-tensors of the normal and anti-normal rays, respectively. Tensors hold the origins and
+        :return: Two 6D-tensors of the normal and anti-normal rays, respectively as well as an array of the surface area
+            of each triangle in the reference mesh and its total area. Tensors hold the origins and
             directions of the rays.
-        :rtype: Tuple(o3d.core.Tensor, o3d.core.Tensor)
+        :rtype: Tuple(o3d.core.Tensor, o3d.core.Tensor, numpy.ndarray, float)
         """
 
         ref_skull = o3d.io.read_triangle_mesh(filename=ref_skull_path, enable_post_processing=True)
@@ -127,19 +144,23 @@ class GeometryProcessor:
         normals = np.asarray(ref_skull.triangle_normals)
         triangles = np.asarray(ref_skull.triangles)
         triangles_coords = vertices[triangles]
+        triangle_areas = self.compute_triangle_area(triangles_coords)
+        total_area = ref_skull.get_surface_area()
         ray_origins = np.mean(triangles_coords, axis=1)
         normal_rays = o3d.core.Tensor(np.concatenate((ray_origins, normals), axis=1), dtype=o3d.core.Dtype.Float32)
         anti_normal_rays = o3d.core.Tensor(np.concatenate((ray_origins, -1 * normals), axis=1),
                                            dtype=o3d.core.Dtype.Float32)
 
-        return normal_rays, anti_normal_rays
+        return normal_rays, anti_normal_rays, triangle_areas, total_area
 
     @staticmethod
     def do_ray_casting(intersect_mesh: o3d.geometry.TriangleMesh, normal_rays: o3d.core.Tensor,
-                       anti_normal_rays: o3d.core.Tensor, margin: float):
+                       anti_normal_rays: o3d.core.Tensor, margin: float, triangle_areas: np.ndarray):
         """
         Computes the actual ray casting procedure of the intersect_mesh with the rays defined in the ray tensors.
 
+        :param triangle_areas: The area sizes of all triangles in the reference mesh.
+        :type triangle_areas: numpy.ndarray
         :param intersect_mesh: Model to be analyzed. The rays will be cast and intersected with this model.
         :type intersect_mesh: o3d.geometry.TriangleMesh
         :param normal_rays: Ray tensor of the rays along normal direction of the reference model.
@@ -167,19 +188,35 @@ class GeometryProcessor:
         an_mask = np.ma.masked_where(np.abs(an_dist) <= margin, an_dist).mask
         print(f'Computed distance mask and hit counts')
 
-        return np.logical_or(n_mask, an_mask).astype(int)
+        hits = np.logical_or(n_mask, an_mask)
+        defect_area = np.sum(np.multiply(np.invert(hits), triangle_areas))
+        print(f'Computed defect area: {defect_area}')
+
+        return hits.astype(int), defect_area, np.sum(hits)
 
     @staticmethod
-    def export_ray_casting_result(ref_skull_path, hits, export_path: str):
+    def export_ray_casting_result(ref_skull_path: str, total_hits: np.ndarray, triangle_areas: np.ndarray,
+                                  hits_per_model: np.ndarray, defect_areas_per_model: np.ndarray, total_area: float,
+                                  import_paths: list, export_path: str) -> None:
         """
         Exports the summarized result of the whole ray casting procedure into a csv file. Using common STL notation,
             the file contains the coordinates of the vertices, the face indices and the number of hits corresponding to
             each face.
 
+        :param triangle_areas: The area sizes of all triangles in the reference mesh.
+        :type triangle_areas: numpy.ndarray
+        :param hits_per_model: The total number of hits for each model.
+        :type hits_per_model: numpy.ndarray
+        :param defect_areas_per_model: The total area of the defect, i.e. triangles whose rays missed, for each model.
+        :type defect_areas_per_model: numpy.ndarray
+        :param total_area: The total area of the reference mesh.
+        :type total_area: float
+        :param import_paths: The file paths of all analyzed defected skulls.
+        :type import_paths: list
         :param ref_skull_path: Path to the exact reference model used for the analysis.
         :type ref_skull_path: str
-        :param hits: Array of hit counts as returned by the ray casting procedure.
-        :type hits: numpy.ndarray
+        :param total_hits: Array of hit counts as returned by the ray casting procedure.
+        :type total_hits: numpy.ndarray
         :param export_path: Path to the csv file to be exported.
         :type export_path: str
         """
@@ -195,13 +232,22 @@ class GeometryProcessor:
         export_df = pd.DataFrame({'x': padded_vertices[:, 0],
                                   'y': padded_vertices[:, 1],
                                   'z': padded_vertices[:, 2],
-                                  'hits': hits,
                                   'i': triangles[:, 0],
                                   'j': triangles[:, 1],
-                                  'k': triangles[:, 2]})
+                                  'k': triangles[:, 2],
+                                  'hits': total_hits,
+                                  'areas': triangle_areas})
 
-        export_df.to_csv(path_or_buf=export_path, index=False)
-        print(f'Exported results to {export_path}')
+        area_df = pd.DataFrame({'model_name': [os.path.basename(p) for p in import_paths],
+                                'total_hits': hits_per_model,
+                                'abs_defect_area': defect_areas_per_model,
+                                'rel_defect_area': defect_areas_per_model / total_area,
+                                'total_area': total_area})
+
+        export_df.to_csv(path_or_buf=f'{export_path}_hits.csv', index=False)
+        area_df.to_csv(path_or_buf=f'{export_path}_areas.csv', index=False)
+        print(f'Exported hits to {export_path}_hits.csv')
+        print(f'Exported areas to {export_path}_areas.csv')
 
     @staticmethod
     def get_convex_hull(mesh_set: plm.MeshSet):

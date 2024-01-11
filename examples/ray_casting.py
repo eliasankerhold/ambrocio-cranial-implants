@@ -14,18 +14,26 @@ importer.scan_import_export_structure()
 
 gm = GeometryProcessor(file_importer=importer)
 
-n_rays, an_rays = gm.prepare_ray_casting(ref_skull_path=processed_ref_skull_path)
+n_rays, an_rays, triangle_areas, total_area = gm.prepare_ray_casting(ref_skull_path=processed_ref_skull_path)
 hits = np.zeros(n_rays.shape[0])
+defect_areas_per_model = np.zeros(len(importer.import_fpaths.values()))
+hits_per_model = np.zeros_like(defect_areas_per_model)
 
 start = datetime.now()
 print(f'{start}: Started ray casting with {hits.shape[0] * 2} rays.')
 
-for import_path, export_path in zip(importer.import_fpaths.values(), importer.export_fpaths.values()):
+for i, paths in enumerate(zip(importer.import_fpaths.values(), importer.export_fpaths.values())):
+    import_path, export_path = paths
     print(f"\nProcessing {import_path}...")
     mesh = gm.load_file(fpath=import_path, library='open3d')
-    hits += gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays, anti_normal_rays=an_rays, margin=300)
+    hit, defect_areas_per_model[i], hits_per_model[i] = gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays,
+                                                                          anti_normal_rays=an_rays,
+                                                                          margin=300, triangle_areas=triangle_areas)
+    hits += hit
 
 print(f'Done! Analysis took {datetime.now() - start}')
 
-gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, hits=hits,
-                             export_path=os.path.join('exports', 'hits_db_01.csv'))
+gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, total_hits=hits,
+                             export_path=os.path.join('exports', 'MIG500_DB_only'), triangle_areas=triangle_areas,
+                             hits_per_model=hits_per_model, defect_areas_per_model=defect_areas_per_model,
+                             total_area=total_area, import_paths=importer.import_fpaths.values())
