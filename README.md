@@ -8,7 +8,8 @@
 <h3 align="center">Cranalyzer</h3>
 
   <p align="center">
-    This repository is being used in the development of novel modular cranial implants. It provides tools for the analysis and visualization of datasets containing 3D models of human skulls with cranial defects. 
+    This repository is being used in the development of novel modular cranial implants. It provides tools for the analysis and visualization of datasets containing 3D models of human skulls with cranial defects. <br>
+    [Project Website](https://eliasankerhold.github.io/ambrocio-cranial-implants/)
   </p>
 </div>
 
