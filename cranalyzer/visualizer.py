@@ -31,11 +31,12 @@ class CranialPlot:
         lighting_effects = dict(ambient=1)
         result = self.hits_results
         normalized_defect_count = (np.max(result.hits) - np.array(result.hits)) / np.max(result.hits) * 100
+        hover_str = [f'{i:.0f} %' for i in normalized_defect_count]
         self.mesh_plot = po.graph_objs.Mesh3d(x=result.x, y=result.y, z=result.z,
                                               i=result.i, j=result.j, k=result.k,
                                               intensitymode='cell', intensity=normalized_defect_count,
                                               cmin=0, cmax=100, colorscale='jet',
-                                              lighting=lighting_effects)
+                                              lighting=lighting_effects, hoverinfo='text', text=hover_str)
 
         return self.mesh_plot
 
