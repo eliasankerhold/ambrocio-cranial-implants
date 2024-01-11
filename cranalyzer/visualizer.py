@@ -1,6 +1,7 @@
 import plotly as po
 import plotly_express as px
 import pandas as pd
+import numpy as np
 
 
 class CranialPlot:
@@ -27,10 +28,14 @@ class CranialPlot:
         :return: Mesh plot of the given results file with standard color map.
         :rtype: plotly.graph_objects.Mesh3d
         """
+        lighting_effects = dict(ambient=1)
         result = self.hits_results
+        normalized_defect_count = (np.max(result.hits) - np.array(result.hits)) / np.max(result.hits) * 100
         self.mesh_plot = po.graph_objs.Mesh3d(x=result.x, y=result.y, z=result.z,
                                               i=result.i, j=result.j, k=result.k,
-                                              intensitymode='cell', intensity=result.hits)
+                                              intensitymode='cell', intensity=normalized_defect_count,
+                                              cmin=0, cmax=100, colorscale='jet',
+                                              lighting=lighting_effects)
 
         return self.mesh_plot
 
