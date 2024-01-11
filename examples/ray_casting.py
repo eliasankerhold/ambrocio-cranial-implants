@@ -5,7 +5,7 @@ import numpy as np
 import os
 from datetime import datetime
 
-processed_ref_skull_path = os.path.join('exports', 'reference_skull_prepared_smoothing.stl')
+processed_ref_skull_path = os.path.join('exports', 'reference_skull_prepared_smoothing_v2.stl')
 
 importer = FileImporter(import_dir='processed_skulls',
                         export_dir=f'exports')
@@ -28,12 +28,12 @@ for i, paths in enumerate(zip(importer.import_fpaths.values(), importer.export_f
     mesh = gm.load_file(fpath=import_path, library='open3d')
     hit, defect_areas_per_model[i], hits_per_model[i] = gm.do_ray_casting(intersect_mesh=mesh, normal_rays=n_rays,
                                                                           anti_normal_rays=an_rays,
-                                                                          margin=300, triangle_areas=triangle_areas)
+                                                                          margin=50, triangle_areas=triangle_areas)
     hits += hit
 
 print(f'Done! Analysis took {datetime.now() - start}')
 
 gm.export_ray_casting_result(ref_skull_path=processed_ref_skull_path, total_hits=hits,
-                             export_path=os.path.join('exports', 'MIG500_DB_only'), triangle_areas=triangle_areas,
+                             export_path=os.path.join('exports', 'MUG500_DB_only_left'), triangle_areas=triangle_areas,
                              hits_per_model=hits_per_model, defect_areas_per_model=defect_areas_per_model,
                              total_area=total_area, import_paths=importer.import_fpaths.values())
