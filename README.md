@@ -50,14 +50,15 @@ The majority of such databases do not originate from targeted efforts to investi
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This project is fully pip installable, but not (yet) hosted on pypi. 
+This project is fully pip installable, but not hosted on pypi. 
 
 ### Prerequisites
 
-To get started, several resources are available here: https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing
-https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing
+To get started, preprocessed and tested resources are available [here](https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing).
 
-These archives contain 29 pre-aligned models of human skulls with cranial defects taken from the publicly available [MUG500+ database](https://github.com/Jianningli/mug500plus). Additionally, they contain a healthy reference skull, originating from the aforementioned database, that proved suitable for the analysis.
+Foremost, the linked directories contain a healthy reference skull on which the analysis was based. The reference skull only consists of the top part and has all facial features removed. There are two versions, one reduced further to only show the left side of the top part.
+
+Additionally, the database contain 29 models of human skulls with cranial defects taken from the publicly available [MUG500+ database](https://github.com/Jianningli/mug500plus). All models are aligned with respect to the reference skull and mirrored in such a way that the defect is on the left side. This was done to improve data quality since a symmetry axis from the front to the back of the skull can be assumed with very good approximation.
 
 *A more detailed description where to save these files to run the example code out of the box will follow here.*
 
