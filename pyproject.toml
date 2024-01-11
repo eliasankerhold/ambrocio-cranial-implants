@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cranalyzer"
-version = "0.0.1"
+version = "0.1.1"
 description = "Semi-automated analysis of cranial defect 3D-model database."
 readme = "README.md"
 authors = [{ name = "Elias Ankerhold", email = "elias.ankerhold@aalto.fi" },
