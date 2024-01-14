@@ -18,6 +18,7 @@ class CranialPlot:
         self.fig = None
 
     def plot_area_histogram(self, bins: int = 20):
+        self.areas_results.abs_defect_area *= 1e-6
         fig = px.histogram(self.areas_results, x='abs_defect_area', nbins=bins)
         fig.show()
 
