@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+
+    <title>Cranalyzer</title>
+    <link rel="stylesheet" href="css/bootstrap.css"/>
+    <link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css"/>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+    $(document).ready(function(){
+
+       $('#content').load("Heatmap_Fullskull.html");
+
+    });
+    </script>
+
+</head>
+
+<body>
+
+<!-- ENTRANCE -->
+<div id="intro">
+    <div class="mask container-fuid" style="background-color: rgba(0, 0, 0, 0.5);height:100vh;">
+        <div class="col-12 ms-auto text-center" id="title">
+            <h3>Welcome to the</h3>
+            <h1 class="display-1" style="margin-bottom:1cm;">Cranalyzer</h1>
+            <a class="btn btn-outline-light" href="#navigbar" role="button">Scroll or Click to explore the project.</a>
+        </div>
+    </div>
+</div>
+<!-- ENTRANCE -->
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top" id="navigbar">
+    <div class="container-fluid">
+        <a class="navbar-brand wait" href="#">Cranalyzer</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#About">About The Project</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#Results">Results</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#GettingStarted">Getting Started</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contacts">Contacts</a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="https://github.com/eliasankerhold/ambrocio-cranial-implants"
+                       target="_blank"><span class="fa fa-github"></span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ABOUT -->
+<span id="About"></span>
+<div class="container py-5">
+    <div class="row text-center">
+
+        <div class="col-lg-6 col-md-8 mx-auto">
+            <h1 class="fw-light">About The Project</h1>
+            <p class="lead text-muted">
+                This project is being used in the development of novel modular cranial implants. It provides tools for
+                the analysis and visualization of datasets containing 3D models of human skulls with cranial defects.
+            </p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="btn-group hover_Psi" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="btnradio1" id="btnradio1" autocomplete="off" onclick="show1();"
+                   checked>
+            <label class="btn btn-outline-dark" for="btnradio1">Cranalyzer</label>
+
+            <input type="radio" class="btn-check" name="btnradio1" id="btnradio2" onclick="show2();" autocomplete="off">
+            <label class="btn btn-outline-dark" for="btnradio2">Modular Cranial Implants</label>
+        </div>
+
+        <!-- First part of about -->
+        <div class="container" id="div2" class="">
+            <div class="row py-4 align-items-center">
+                <div class="col-lg-7 justi">
+                    <p>This projects aids the quantitative analysis of cranial defects in humans by providing tools for
+                        analyzing datasets of 3D-models of damaged skulls in STL file format. The analysis is based on a
+                        ray casting procedure, where linear rays originating from a pre-defined reference skull are
+                        intersected with damaged skull models. A visualization tool allows the creation of an
+                        interactive 3D-heatmap, which displays the whole database on the surface of the reference
+                        skull.</p>
+                    <p>The majority of such databases do not originate from targeted efforts to investigate the
+                        statistic of cranial defects, but are a byproduct of patient-specific implant design. Since this
+                        design process only requires models of the upper parts of the skull, facial features are
+                        commonly not present. This removes almost all symmetries and dramatically complicates the
+                        alignment necessary for an analysis. In the current state of the project, it is therefore
+                        necessary to manually align the damaged skull models to the reference skull. If the availability
+                        of such databases improves, a machine-learning based approach to this alignment procedure could
+                        be explored.</p>
+                </div>
+                <div class="col-lg-5 ">
+                    <div id="carouselIndicators" class="carousel slide" data-interval="8000" data-bs-ride="carousel">
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0"
+                                    class="active" aria-current="true" aria-label="Slide 1"></button>
+                            <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1"
+                                    aria-label="Slide 2"></button>
+                            <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="2"
+                                    aria-label="Slide 3"></button>
+                        </div>
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="images/p1.jpg" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/p2.png" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="carousel-item">
+                                <img src="images/p4.png" class="d-block w-100" alt="...">
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselIndicators"
+                                    data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselIndicators"
+                                    data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second part of about -->
+        <div class="container" id="div1" class="hide py-4">
+            <div class="row py-4 align-items-center">
+                <div class="col-md-4">
+                    <img src="images/p5.png" class="d-block w-100" alt="...">
+                </div>
+                <div class="col-md-8">
+                    The comprehensive objective of this year-long project is to address the challenge of devising semi-patient-specific skull implants, a solution with dual applicability
+                    in both emergency situations and the routine exigencies of hospital care. Our overarching vision entails
+                    the development of an integrated system that not only facilitates mass production but also effectively
+                    drives down associated costs, thus democratizing access to this critical medical intervention on a global scale.
+                    Through the integration of innovative technologies and logistical strategies, our endeavor aims to
+                    streamline the distribution process, ensuring that these life-saving implants can be readily dispatched worldwide
+                    or efficiently manufactured within hospital facilities. Moreover, our endeavor aspires to introduce
+                    an element of user-friendliness by optimizing assembly protocols, potentially complemented by bespoke software solutions
+                    engineered to enhance precision and mitigate any potential errors attributable to human factors. These measures underpin our mission to catalyze the widespread adoption of this groundbreaking
+                    implant technology, ultimately superseding traditional methodologies and revolutionizing the paradigm of cranial
+                    intervention on a global scale.
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- ABOUT -->
+
+<div id="transi_1">
+    <div class="mask container-fuid" style="background-color: rgba(0, 0, 0, 0.5);height:20vh;">
+
+    </div>
+</div>
+
+<!-- RESULTS -->
+<span id="Results"></span>
+<div class="container py-5">
+    <div class="row align-items-center justify-content-center">
+        <div class="col-sm-12 col-md-5 justify-content-center">
+            <h1 class="display-4 text-center">Results</h1>
+            <p class="display-7 text-center"><a href="Heatmap_Fullskull.html" target="_blank">Click here for a fullscreen plot</a> </p>
+        </div>
+        <div class="col-sm-12 col-md-7" id="content">
+        <!-- This div embeds the plotly using jquery-->
+        </div>
+    </div>
+</div>
+<!-- RESULTS -->
+
+<div id="transi_2">
+    <div class="mask container-fuid" >
+
+    </div>
+</div>
+
+<!-- RESULTS -->
+<span id="GettingStarted"></span>
+<div class="container py-5">
+  <h1 class="display-4">Getting Started</h1>
+
+  This project is fully pip installable, but not (yet) hosted on pypi.
+
+  <h3 class="display-6">Prerequisites</h3>
+  <p>To get started, several resources are available here: <a href="https://drive.google.com/drive/folders/1ZF87LsVM5wFYWkNBPbF12JSZAJvlF6oZ?usp=sharing" target="_blank">Archive 1</a> and <a href="https://drive.google.com/drive/folders/1EVF9dfmyLoLZwhiFuIL9kGNNWUk-N6gN?usp=sharing" target="_blank">Archive 2</a></p>
+
+  <p>These archives contain 29 pre-aligned models of human skulls with cranial defects taken from the publicly available [MUG500+ database](https://github.com/Jianningli/mug500plus). Additionally, they contain a healthy reference skull, originating from the aforementioned database, that proved suitable for the analysis.</p>
+
+  <p><em>A more detailed description where to save these files to run the example code out of the box will follow here.</em></p>
+
+  <h3 class="display-6">Installation</h3>
+  <ol>
+      <li>Clone the repo</li>
+      <pre class="text-center">
+          git clone https://github.com/eliasankerhold/ambrocio-cranial-implants.git
+      </pre>
+      <li>Navigate to the root directory</li>
+      <pre class="text-center">
+          cd ambrocio-cranial-implants
+      </pre>
+      <li>Install using pip</li>
+      <pre class="text-center">
+          python -m pip install .
+      </pre>
+  </ol>
+
+
+  <!-- USAGE EXAMPLES -->
+  <h3 class="display-6">Usage</h3>
+
+  An example workflow and working analysis of the referenced database can be found in the `examples` directory.
+
+
+</div>
+<!-- RESULTS -->
+
+<div id="transi_3">
+    <div class="mask container-fuid" style="background-color: rgba(0, 0, 0, 0.5);height:20vh;">
+
+    </div>
+</div>
+
+
+<!-- CONTACTS -->
+<div class="container" id="contacts">
+    <div class="row py-4">
+        <div class="col-12">
+            <h1 class="display-4 text-center">Contacts</h1>
+        </div>
+    </div>
+    <div class="text-center">
+        If you are interested by our work or that you simply want some clarifications or information, you can contact us
+        at the following email addresses:
+    </div>
+    <div class="py-4 text-center">
+        <p>Jonas Tjepkema - jonas.tjepkema[at]aalto.fi</p>
+        <p>Elias Ankerhold - elias.ankerhold[at]aalto.fi</p>
+
+    </div>
+    <div class="py-3">
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="container-fluid py-3">
+    <div class="">
+        <p class="text-center mb-1 small">Website built by Jonas Tjepkema, 2024 © All Rights Reserved</p>
+    </div>
+</footer>
+
+
+<script src="js/bootstrap.js"></script>
+
+<!-- Script for About Me section -->
+<script>
+    function show1(){
+      document.getElementById('div1').style.display ='none';
+      document.getElementById('div2').style.display ='block';
+    }
+    function show2(){
+      document.getElementById('div1').style.display = 'block';
+      document.getElementById('div2').style.display ='none';
+    }
+    function show3(){
+      document.getElementById('div3').style.display ='block';
+      document.getElementById('div4').style.display = 'none';
+      document.getElementById('div5').style.display = 'none';
+      document.getElementById("btnradio3").checked = true;
+    }
+    function show4(){
+      document.getElementById('div3').style.display = 'none';
+      document.getElementById('div4').style.display = 'block';
+      document.getElementById('div5').style.display = 'none';
+      document.getElementById("btnradio4").checked = true;
+    }
+    function show5(){
+      document.getElementById('div3').style.display = 'none';
+      document.getElementById('div4').style.display = 'none';
+      document.getElementById('div5').style.display = 'block';
+      document.getElementById("btnradio5").checked = true;
+    }
+    show1();
+    show3();
+</script>
+
+</body>
+</html>
